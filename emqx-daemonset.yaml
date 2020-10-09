@@ -1,0 +1,53 @@
+  apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: sysctl-config
+  namespace: emqx
+spec:
+  selector:
+    matchLabels:
+      name: sysctl-config
+  template:
+    metadata:
+      labels:
+        name: sysctl-config
+    spec:
+      hostNetwork: yes
+      initContainers:
+        - name: init
+          image: alpine
+          command:
+          - /bin/sh
+          - -c
+          - |
+            sysctl -w fs.file-max=1048576
+            sysctl -w fs.nr_open=1048576
+            sysctl -w net.core.somaxconn=8192
+            sysctl -w net.ipv4.tcp_max_syn_backlog=4096
+            sysctl -w net.core.netdev_max_backlog=4096
+            sysctl -w net.netfilter.nf_conntrack_max=1000000
+            sysctl -w net.netfilter.nf_conntrack_tcp_timeout_time_wait=30
+            sysctl -w net.ipv4.tcp_fin_timeout=15
+            sysctl -w net.core.rmem_default=262144
+            sysctl -w net.core.wmem_default=262144
+            sysctl -w net.core.rmem_max=16777216
+            sysctl -w net.core.wmem_max=16777216
+            sysctl -w net.core.optmem_max=16777216
+            sysctl -w net.ipv4.tcp_rmem='1024 4096 16777216'
+            sysctl -w net.ipv4.tcp_wmem='1024 4096 16777216'
+          securityContext:
+            privileged: true
+      containers:
+        - name: sleep
+          image: alpine
+          command:
+          - /bin/sh
+          - -c
+          - sleep 3600
+          resources:
+            limits:
+              cpu: 50m
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi

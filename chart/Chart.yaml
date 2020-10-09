@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: 4.1
+description: A Helm chart for EMQ X Enterprise with extra config.
+name: emqx-ee-sysctl
+type: application
+version: 4.1.1

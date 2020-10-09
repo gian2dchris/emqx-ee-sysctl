@@ -1,0 +1,76 @@
+affinity: {}
+emqxAclConfig: |
+  {allow, {user, "dashboard"}, subscribe, ["$SYS/#"]}. {allow, {ipaddr, "127.0.0.1"}, pubsub, ["$SYS/#", "#"]}. {deny, all, subscribe, ["$SYS/#", {eq, "#"}]}. {allow, all}.
+emqxConfig:
+  EMQX_CLUSTER__K8S__ADDRESS_TYPE: hostname
+  EMQX_CLUSTER__K8S__APISERVER: https://kubernetes.default.svc:443
+  EMQX_CLUSTER__K8S__SUFFIX: svc.cluster.local
+  # enable emqx_statsd plugin to push metrics to prometheus-pushgateway
+  # Community version plugin is called emqx_statsd.conf and ee version calls it emqx_prometheus.conf
+  EMQX_LOADED_PLUGINS: "emqx_recon,emqx_retainer,emqx_management,emqx_dashboard,emqx_prometheus"
+  # Point to your prometheus Gateway
+  EMQX_PROMETHEUS__PUSH__GATEWAY__SERVER: "http://localhost:9091"
+  EMQX_PROMETHEUS__INTERVAL: "5000"
+  # enable ssl
+  EMQX_LISTENER__SSL__EXTERNAL: "8883"
+  EMQX_LISTENER__SSL__EXTERNAL__KEYFILE: etc/certs/emqx.key
+  EMQX_LISTENER__SSL__EXTERNAL__CERTFILE: etc/certs/emqx.pem
+  EMQX_LISTENER__SSL__EXTERNAL__CACERTFILE: etc/certs/emqx_ca.pem
+  EMQX_LISTENER__SSL__EXTERNAL__VERIFY: verify_peer
+  # Erlang VM Tuning
+  EMQX_NODE__PROCESS_LIMIT: "2097152"
+  EMQX_NODE__MAX_PORTS: "1048576"
+  # Global Garbage Collection
+  EMQX_NODE__GLOBAL_GC_INTERVAL: "5m"
+  EMQX_ZONE__INTERNAL__FORCE_GC_POLICY: "16000|16MB"
+  EMQX_ZONE__EXTERNAL__FORCE_GC_POLICY: "16000|16MB"
+  # TCP tuning
+  EMQX_LISTENER__TCP__EXTERNAL__ACCEPTORS: "64"
+  EMQX_LISTENER__TCP__EXTERNAL__MAX_CLIENTS: "100000"
+  # set max mqueue length to unlimited
+  EMQX_ZONE__INTERNAL__MAX_MQUEUE_LEN: "0"
+  EMQX_ZONE__EXTERNAL__MAX_MQUEUE_LEN: "0"
+emqxLicneseSecretName: null #emqx-license
+emqxCertSecretName: null #emqx-certificates
+emqxEnableNodePort: null
+image:
+  pullPolicy: IfNotPresent
+  repository: emqx/emqx-ee
+ingress:
+  annotations: {}
+  enabled: false
+  hosts:
+  - chart-example.local
+  path: /
+  tls: []
+nodeSelector: {}
+persistence:
+  accessMode: ReadWriteOnce
+  enabled: false
+  size: 20Mi
+replicaCount: 3
+resources:
+  limits:
+    cpu: 1000m
+    memory: 4096M
+  requests:
+    cpu: 50m
+    memory: 1024M
+service:
+  type: ClusterIP
+  annotations: {}
+  dashboard: 18083
+  loadBalancerSourceRanges: []
+  mgmt: 8081
+  mqtt: 1883
+  mqttssl: 8883
+  ws: 8083
+  wss: 8084
+  nodePorts:
+    dashboard: null
+    mgmt: null
+    mqtt: null
+    mqttssl: null
+    ws: null
+    wss: null
+tolerations: []
