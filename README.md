@@ -22,7 +22,7 @@ Tuning parameters are set for a EMQ X Message Server 4.x version running on an 8
 
 When evaluating the MQTT broker we run few scenarios and stress tests using benchmarks. Before Kernel level tuning was in place we noticed a strange behaviour; as connection number was rising the brokers started to allocate memory up to the point they crashed. Garbage collection was in place, but it did not seem to help and metrics from erlang's processes could not justify the resources consumption, so we concluded that it was some sort of TCP connection and/or socket buffering.
 
-To understand this better I recommend checking this brilliant blog post on [How TCP backlog works in Linux](http://veithen.io/2014/01/01/how-tcp-backlog-works-in-linux.html)
+To understand this better I recommend checking this brilliant blog post on [How TCP backlog works in Linux](http://veithen.io/2014/01/01/how-tcp-backlog-works-in-linux.html).
 
 Kubernetes Documentation states:
 
@@ -30,7 +30,7 @@ Kubernetes Documentation states:
 
 ## EMQX configuration: `etc/emqx.conf`
 
-To set `listener.ssl.external` in `emqx.conf` to `"8883"` include the following line in `values.yaml`
+To set `listener.ssl.external` in `emqx.conf` to `"8883"` add the following line in `values.yaml`
 
 ```yaml
 emqxConfig:
@@ -50,7 +50,7 @@ emqxConfig:
   EMQX_LOADED_PLUGINS: "emqx_recon,emqx_retainer,emqx_management,emqx_dashboard,emqx_prometheus"
 ```
 
-2. `EMQX_PROMETHEUS__PUSH__GATEWAY__SERVER` sets `prometheus.push.gateway.server` in `etc/emqx/plugins/emqx_prometheus.conf`
+2. To set `prometheus.push.gateway.server` in `etc/emqx/plugins/emqx_prometheus.conf` add the following line in `values.yaml`
 
 ```yaml
 emqxConfig:
@@ -59,7 +59,7 @@ emqxConfig:
   ...
 ```
 
-You can enable and configure other plugins this way, too. Keep in mind that community version metrics [plugin](https://docs.emqx.io/enterprise/latest/en/tutorial/prometheus.html) is called `emqx_statsd.conf` and ee version calls it `emqx_prometheus.conf`. I did not find this documented anywhere.
+You can enable and configure other plugins this way, too. Keep in mind that community version metrics [plugin](https://docs.emqx.io/enterprise/latest/en/tutorial/prometheus.html) is called `emqx_statsd.conf` and enterprise version calls it `emqx_prometheus.conf`. I did not find this documented anywhere.
 
 ```sh
 ##--------------------------------------------------------------------
@@ -100,4 +100,4 @@ $ helm install emqx-ee ./ \
 
 [EMQX: Configuration](https://docs.emqx.io/enterprise/latest/en/configuration/configuration.html)
 
-[EMQX: Tuning](https://docs.emqx.io/enterprise/latest/en/tutorial/tune.html)**
+[EMQX: Tuning](https://docs.emqx.io/enterprise/latest/en/tutorial/tune.html)
